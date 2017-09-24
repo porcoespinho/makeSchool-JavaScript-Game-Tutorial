@@ -1,0 +1,318 @@
+<!doctype html>
+<html>
+  <head>
+	  <title>Game</title>
+    <style>
+
+  .game-square {
+    box-sizing: border-box;
+    border: 1px solid #000;
+    width: 100px;
+    height: 100px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .game-square > div {
+    width: 100%;
+    height: 200%;
+    position: absolute;
+    top: 0;
+    transition: 400ms; /* <- Add transition */
+  }
+
+  .game-square > div > div {
+    height: 50%;
+  }
+
+  .game-square > div > div:first-child {
+    background-color: gray;
+  }
+
+  .flip > div {
+    top: -100%;
+  }
+
+  .square-0 {
+    background-color: aqua;
+  }
+
+  .square-1 {
+    background-color: bisque;
+  }
+
+  .square-2 {
+    background-color: blue;
+  }
+
+  .square-3 {
+    background-color: blueviolet;
+  }
+
+  .square-4 {
+    background-color: brown;
+  }
+
+  .square-5 {
+    background-color: cadetblue;
+  }
+
+  .square-6 {
+    background-color: chartreuse;
+  }
+
+  .square-7 {
+    background-color: chocolate;
+  }
+
+  .square-8 {
+    background-color: coral;
+  }
+
+  .square-9 {
+    background-color: cornflowerblue;
+  }
+   
+
+	#game {
+	  width: 400px;
+	  height: 400px;
+	  display: flex;
+	  flex-direction: row;
+	  flex-wrap: wrap;
+	  border: 1px solid red;
+	}
+
+    </style> 
+  </head>
+  <body>
+  <div class='container'>
+    <button onclick="setupGame()">Start</button><br>
+  	<button onclick="clearGame()" id='reset-button'>Reset</button>
+    <div id='game'>
+
+      <!-- Game Ssquares -->
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>
+      	<div class="game-square">
+      	  <div>
+      	    <div></div>
+      	    <div></div>
+      	  </div>	
+      	</div>    	      	      	      	      	      	       	
+      </div>	
+    </div>
+
+    <script>
+      // JS Code here
+
+      // this line is not really used ??
+      var resetButton = document.getElementById("reset-button");
+
+      // create an array for the "color" classes
+      var colors = [];
+      for (var i = 0; i < 10; i++) {
+        colors.push('square-' + i);
+      }
+
+      function GameSquare(el, color) {
+  		this.el = el;
+  		this.isOpen = false;
+  		this.isLocked = false;
+  		this.el.addEventListener("click", this, false);
+  		this.setColor(color); // <-- Set the color!
+	  } 
+
+      GameSquare.prototype.handleEvent = function(e) {
+      	switch (e.type) {
+      	  case "click":
+      	    if (this.isOpen || this.isLocked) {
+      	      return;
+      	    }
+      	    this.isOpen = true;
+      	    this.el.classList.add('flip');
+            checkGame(this); 
+      	}
+      }
+
+      GameSquare.prototype.reset = function() {
+        this.isOpen = false;
+        this.isLocked = false;
+        this.el.classList.remove('flip');
+      }
+
+      GameSquare.prototype.lock = function() {
+      	this.isLocked = true;
+      	this.isOpen = true;
+      }
+
+      GameSquare.prototype.setColor = function(color) {
+      	this.el.children[0].children[1].classList.remove(this.color);
+      	this.color = color;
+      	this.el.children[0].children[1].classList.add(color);
+      }
+
+      var gameSquares = [];
+
+	  function setupGame() {
+	    var array = document.getElementsByClassName("game-square");
+      var randomColors = getSomeColors();
+	    for (var i = 0; i < array.length; i++) {
+        var index = random(randomColors.length);
+        var color = randomColors.splice(index, 1)[0];
+	      gameSquares.push(new GameSquare(array[i], color));
+	    }
+	  }
+
+    function random(n) {
+      return Math.floor(Math.random() * n);
+    }
+
+    function getSomeColors() {
+      var colorsCopy  = colors.slice();
+      var randomColors = [];
+      for (var i = 0; i < 8; i++) {
+        var index = random(colorsCopy.length);
+        randomColors.push(colorsCopy.splice(index, 1)[0]);
+      }
+      return randomColors.concat(randomColors.slice());
+    }
+
+    // Game logic
+
+    // null when no square has been clicked
+    var firstSquare = null;
+
+
+    function checkGame(gameSquare) {
+    // firstSquare null, then clicked square becomes firstSquare
+      if (firstSquare === null) {
+        firstSquare = gameSquare;
+        return;
+      }
+
+      // firstSquare not null, this is the second square clicked
+      // if colors match lock both open, if not reset both squares
+      if (firstSquare.color === gameSquare.color) {
+        firstSquare.lock();
+        gameSquare.lock(); 
+      } else {
+        var a = firstSquare;
+        var b = gameSquare;
+        setTimeout(function() {
+          a.reset();
+          b.reset();
+          firstSquare = null;
+        }, 400);
+      }
+      firstSquare = null;
+    }
+
+    function randomizeColors() {
+      var randomColors = getSomeColors();
+      gameSquares.forEach(function(gameSquare) {
+        var color = randomColors.splice(random(randomColors.length), 1)[0];
+        gameSquare.setColor(color);
+      });
+    }
+
+  　function clearGame() {
+      gameSquares.forEach(function(gameSquare) {
+        gameSquare.reset();
+      });
+      setTimeout(function() {
+        randomizeColors();
+      }, 500);
+    }
+
+    </script>	
+  </body>
+</html>
